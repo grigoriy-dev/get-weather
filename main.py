@@ -11,9 +11,9 @@ from sqlalchemy import Table, MetaData, Column, Integer, String, create_engine
 
 
 # Путь к базе данных
-db_path = 'files/weather_db.db'
+db_path = '/files/weather_db.db'
 # Путь к файлу .xlsx
-xlsx_path = '/content/drive/My Drive/ColabNotebooks/gwth/files/weather.xlsx'
+xlsx_path = '/files/weather.xlsx'
 
 # Конфигурация базы данных
 sqlite_database = "sqlite:///" + db_path
