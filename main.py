@@ -11,9 +11,9 @@ from sqlalchemy import Table, MetaData, Column, Integer, String, create_engine
 
 
 # Путь к базе данных
-db_path = '/files/weather_db.db'
+db_path = 'files/weather_db.db'
 # Путь к файлу .xlsx
-xlsx_path = '/files/weather.xlsx'
+xlsx_path = 'files/weather.xlsx'
 
 # Конфигурация базы данных
 sqlite_database = "sqlite:///" + db_path
@@ -245,10 +245,8 @@ async def main():
     exporter = DataExporter(database)
 
     ui = UserInterface(database, exporter)
-
     # Запуск обновления погоды в отдельном таске
     asyncio.create_task(update_weather(extractor, transformer, loader))
-
     # Запуск интерфейса пользователя
     await ui.run()
 
@@ -260,7 +258,7 @@ async def update_weather(extractor, transformer, loader):
         weather = Weather(**transformed_data)
         await loader.load_data(weather)
         delay = 0.1
-        await asyncio.sleep(60 * delay)  # Обновлять погоду каждые delay минут
+        await asyncio.sleep(60 * delay) # Обновлять погоду каждые delay минут
 
 
 if __name__ == '__main__':
