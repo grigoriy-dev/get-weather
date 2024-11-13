@@ -1,12 +1,7 @@
 from dataclasses import dataclass
-from sqlalchemy import create_engine, Integer, String
+from sqlalchemy import Integer, String
 from sqlalchemy.orm import DeclarativeBase, declared_attr, Mapped, mapped_column
-from Settings.config import db_path
 
-
-# Конфигурация базы данных
-sqlite_database = "sqlite:///" + db_path
-engine = create_engine(sqlite_database, echo=False)
 
 
 @dataclass

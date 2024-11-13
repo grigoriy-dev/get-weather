@@ -3,6 +3,9 @@ db_path = '/content/drive/My Drive/ColabNotebooks/gwth/files/weather_db.db'
 # Путь к файлу .xlsx
 xlsx_path = '/content/drive/My Drive/ColabNotebooks/gwth/files/weather.xlsx'
 
+# Конфигурация базы данных
+sqlite_database = "sqlite:///" + db_path
+
 # Инициализация розы ветров
 rose = range(0, 361, 45)
 wind = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ', 'С']

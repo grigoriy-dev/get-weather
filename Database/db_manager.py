@@ -1,6 +1,6 @@
 # Импорт зависимостей
-from Setting.config import xlsx_path, rows
 from base import WeatherData, Weather, Base
+from Settings.config import xlsx_path, db_path, rows, sqlite_database
 # Импорт библиотек
 import pandas as pd
 from typing import Generator
