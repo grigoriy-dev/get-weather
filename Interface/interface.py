@@ -1,24 +1,14 @@
+from Settings.config import command_dict, help_message
+
 import asyncio
-from Database.config import WeatherDatabase, Weather, sqlite_database
 
-# Путь к файлу .xlsx
-xlsx_path = 'files/weather.xlsx'
 
-# Класс инициализирует пользовательский интерфейс
 class UserInterface:
-    def __init__(self, database: WeatherDatabase, exporter: WeatherDatabase.export_to_xlsx):
+    def __init__(self, database: WeatherDatabase, exporter: DataExporter):
         self.database = database
         self.exporter = exporter
-        self.command_dict = {
-            '/export': self.export_data,
-            '/show': self.show_data
-        }
-        self.help_message = (
-            '\n--- Доступные команды: ---'
-            '\n/show - Вывести данные на экран'
-            '\n/export - Экспортировать данные в .xlsx'
-            '\n---------------------------'
-        )
+        self.command_dict = command_dict
+        self.help_message = help_message
 
     async def run(self):
         # функция принимает команды от пользователя
@@ -34,7 +24,7 @@ class UserInterface:
                 break
 
     async def export_data(self):
-        await self.exporter.export_to_xlsx(xlsx_path)
+        await self.exporter.export_to_xlsx()
 
     async def show_data(self):
         last_weather = await self.database.get_last_weather()

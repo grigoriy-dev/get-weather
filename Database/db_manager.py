@@ -1,6 +1,8 @@
 # Импорт зависимостей
+from Setting.config import xlsx_path, rows
 from base import WeatherData, Weather, Base
 # Импорт библиотек
+import pandas as pd
 from typing import Generator
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
@@ -8,6 +10,10 @@ from contextlib import contextmanager
 
 
 class DataBaseManager :
+    '''
+    Класс-менеджер для управления данными в контексте БД.
+    Используется @contextmanager для безопасных сессий.
+    '''
     def __init__(self, sqlite_database):
         self.engine = create_engine(sqlite_database, echo=False)
         Base.metadata.create_all(self.engine)
@@ -27,7 +33,7 @@ class DataBaseManager :
 
     async def save_weather(self, weather: Weather):
         # Запись полученных данных о погоде в БД
-        with self.session_scope() as session:
+        async with self.session_scope() as session:
             new_record = WeatherData(
                 city=weather.city,
                 date=weather.date,
@@ -61,3 +67,12 @@ class DataBaseManager :
                 )
             else:
                 raise ValueError("No weather data available.")
+
+    async def export_to_xlsx(self):
+        # Экспорт последней записи из БД в файл xlsx
+        async with self.session_scope() as session:
+            query = session.query(WeatherData).order_by(WeatherData.id.desc()).limit(rows)
+            df = pd.read_sql_query(query.statement, con=self.engine)
+            async with pd.ExcelWriter(xlsx_path, mode='w') as writer:
+                df.to_excel(writer, index=False, sheet_name='Sheet_1')
+            print('Данные экспортированы\n')
