@@ -1,9 +1,10 @@
 from Database.db_manager import DataBaseManager
+from Tools.extractor import DataService
 import asyncio
 
 async def main():
     mng = DataBaseManager
-    extractor = mng.(latitude=55.751244, longitude=37.618423)
+    extractor = DataService().fetch_data()
     transformer = DataTransformer(wind_rose)
     loader = DataLoader(database)
     exporter = DataExporter(database)
