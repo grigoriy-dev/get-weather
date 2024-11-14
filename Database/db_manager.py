@@ -70,7 +70,11 @@ class DataBaseManager:
     async def export_to_xlsx(self):
         # Экспорт последней записи из БД в файл xlsx
         with self.session_scope() as session:
-            query = session.query(WeatherData).order_by(WeatherData.id.desc()).limit(rows)
+            query = (
+                    session.query(WeatherData)
+                    .order_by(WeatherData.id.desc())
+                    .limit(rows)
+            )
             df = pd.read_sql_query(query.statement, con=self.engine)
             with pd.ExcelWriter(xlsx_path, mode='w') as writer:
                 df.to_excel(writer, index=False, sheet_name='Sheet_1')
