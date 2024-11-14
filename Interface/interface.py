@@ -1,12 +1,12 @@
 from Settings.config import command_dict, help_message
+from Database.db_manager import DataBaseManager as MNG
 
 import asyncio
 
 
 class UserInterface:
-    def __init__(self, database: WeatherDatabase, exporter: DataExporter):
+    def __init__(self, database: MNG):
         self.database = database
-        self.exporter = exporter
         self.command_dict = command_dict
         self.help_message = help_message
 

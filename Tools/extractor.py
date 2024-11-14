@@ -1,10 +1,9 @@
 import asyncio
 import aiohttp
 from typing import Dict, Any
-
 from Database.base import Weather
 from Settings.config import precipitation_map
-from utils import round_value, get_wind_direction
+from .utils import round_value, get_wind_direction
 
 
 class DataService:
@@ -12,14 +11,11 @@ class DataService:
     Класс для работы с данными о погоде.
     Осуществляет запрос к API, преобразование полученных данных и формирование объекта Weather.
     """
-    def __init__(self, latitude: float, longitude: float, rose: Dict[int, str]):
-        self.latitude = latitude
-        self.longitude = longitude
-        self.rose = rose
+    def __init__(self, latitude: float, longitude: float):
         self.url = "https://api.open-meteo.com/v1/forecast"
         self.params = {
-            "latitude": self.latitude,
-            "longitude": self.longitude,
+            "latitude": latitude,
+            "longitude": longitude,
             "current": [
                 "temperature_2m",
                 "rain", "showers",
@@ -44,14 +40,15 @@ class DataService:
 
     async def transform_data(self, raw_data: Dict[str, Any], city: str) -> Weather:
         # Метод для преобразования сырых данных в объект класса Weather.
+        raw_data = raw_data['current']
         transformed_data = {
             'city': city,
             'date': raw_data['time'][:10],
             'time': raw_data['time'][11:],
-            'temperature': await self.round_value(raw_data['temperature_2m']),
-            'wind_dir': await self.get_wind_direction(raw_data['wind_direction_10m']),
-            'wind_speed': await self.round_value(raw_data['wind_speed_10m']),
-            'pressure': await self.round_value(raw_data['surface_pressure'])
+            'temperature': await round_value(raw_data['temperature_2m']),
+            'wind_dir': await get_wind_direction(raw_data['wind_direction_10m']),
+            'wind_speed': await round_value(raw_data['wind_speed_10m']),
+            'pressure': await round_value(raw_data['surface_pressure'])
         }
 
         for key, (prec_type, amount_key) in precipitation_map.items():

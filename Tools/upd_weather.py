@@ -1,10 +1,22 @@
+import asyncio
+from Database.base import Weather
+from Database.db_manager import DataBaseManager
+from Tools.extractor import DataService
+from Settings.config import delay, cities, wind_rose, sqlite_database
 
 
-async def update_weather(extractor, transformer, loader):
+async def update_weather(city, latitude, longitude):
     while True:
-        raw_data = await extractor.fetch_data()
-        transformed_data = await transformer.transform_data(raw_data['current'], 'Москва')
-        weather = Weather(**transformed_data)
-        await loader.load_data(weather)
-        delay = 0.1
-        await asyncio.sleep(60 * delay)  # Обновлять погоду каждые delay минут
+        # Ждем delay минут перед следующим обновлением
+        await asyncio.sleep(delay * 60)
+        try:
+            MNG = DataBaseManager(sqlite_database)
+            DS = DataService(latitude, longitude)
+
+            raw_data = await DS.fetch_data()
+            transform_data = await DS.transform_data(raw_data, city)
+            load_data = await MNG.save_weather(weather=transform_data)
+            print('Данные успешно сохранены в БД')
+        except Exception as e:
+            print(f"Произошла ошибка при обновлении погоды: {e}")
+        
