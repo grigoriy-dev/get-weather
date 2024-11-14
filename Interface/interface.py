@@ -1,4 +1,3 @@
-from Settings.config import command_dict, help_message
 from Database.db_manager import DataBaseManager as MNG
 
 import asyncio
@@ -7,8 +6,14 @@ import asyncio
 class UserInterface:
     def __init__(self, database: MNG):
         self.database = database
-        self.command_dict = command_dict
-        self.help_message = help_message
+        self.command_dict = {
+            '/show': self.show_data,
+            '/export': self.export_data,
+        }
+        self.help_message = (
+            '\n/show - Вывести данные на экран'
+            '\n/export - Экспортировать данные в .xlsx'
+        )
 
     async def run(self):
         # функция принимает команды от пользователя
@@ -24,7 +29,7 @@ class UserInterface:
                 break
 
     async def export_data(self):
-        await self.exporter.export_to_xlsx()
+        await self.database.export_to_xlsx()
 
     async def show_data(self):
         last_weather = await self.database.get_last_weather()
