@@ -1,5 +1,6 @@
 # Импорт зависимостей
 from .base import WeatherData, Weather, Base
+from Interface.messages import success_message, error_message
 from Settings.config import xlsx_path, db_path, rows, sqlite_database
 # Импорт библиотек
 import pandas as pd
@@ -33,19 +34,24 @@ class DataBaseManager:
 
     async def save_weather(self, weather: Weather):
         # Запись полученных данных о погоде в БД
-        with self.session_scope() as session:
-            new_record = WeatherData(
-                city=weather.city,
-                date=weather.date,
-                time=weather.time,
-                temperature=weather.temperature,
-                wind_dir=weather.wind_dir,
-                wind_speed=weather.wind_speed,
-                pressure=weather.pressure,
-                precipitation=weather.precipitation,
-                prec_amount=weather.prec_amount
-            )
-            session.add(new_record)
+        msg = 'Сохранение данных в БД'
+        try:
+            with self.session_scope() as session:
+                new_record = WeatherData(
+                    city=weather.city,
+                    date=weather.date,
+                    time=weather.time,
+                    temperature=weather.temperature,
+                    wind_dir=weather.wind_dir,
+                    wind_speed=weather.wind_speed,
+                    pressure=weather.pressure,
+                    precipitation=weather.precipitation,
+                    prec_amount=weather.prec_amount
+                )
+                session.add(new_record)
+            success_message(msg)
+        except Exception as e:
+            error_message(msg, e)
 
     async def get_last_weather(self):
         # Извлечение последней записи из БД
@@ -68,14 +74,17 @@ class DataBaseManager:
                 raise ValueError("No weather data available.")
 
     async def export_to_xlsx(self):
-        # Экспорт последней записи из БД в файл xlsx
+        # Экспорт  из БД в файл xlsx
+        msg = 'Экспорт д'
         with self.session_scope() as session:
             query = (
                     session.query(WeatherData)
                     .order_by(WeatherData.id.desc())
                     .limit(rows)
             )
-            df = pd.read_sql_query(query.statement, con=self.engine)
+            df = pd.read_sql_query(
+                    query.statement, con=self.engine
+            )
             with pd.ExcelWriter(xlsx_path, mode='w') as writer:
                 df.to_excel(writer, index=False, sheet_name='Sheet_1')
-            print('Данные экспортированы\n')
+            success_message
