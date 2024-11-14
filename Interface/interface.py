@@ -16,7 +16,7 @@ class UserInterface:
         )
 
     async def run(self):
-        # функция принимает команды от пользователя
+        # метод принимает команды от пользователя
         while True:
             try:
                 cmd = await asyncio.get_event_loop().run_in_executor(None, input)
