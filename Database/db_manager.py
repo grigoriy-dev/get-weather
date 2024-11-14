@@ -49,9 +49,9 @@ class DataBaseManager:
                     prec_amount=weather.prec_amount
                 )
                 session.add(new_record)
-            success_message(msg)
+            print(success_message(msg))
         except Exception as e:
-            error_message(msg, e)
+            print(error_message(msg, e))
 
     async def get_last_weather(self):
         # Извлечение последней записи из БД
@@ -75,16 +75,19 @@ class DataBaseManager:
 
     async def export_to_xlsx(self):
         # Экспорт  из БД в файл xlsx
-        msg = 'Экспорт д'
-        with self.session_scope() as session:
-            query = (
-                    session.query(WeatherData)
-                    .order_by(WeatherData.id.desc())
-                    .limit(rows)
-            )
-            df = pd.read_sql_query(
-                    query.statement, con=self.engine
-            )
-            with pd.ExcelWriter(xlsx_path, mode='w') as writer:
-                df.to_excel(writer, index=False, sheet_name='Sheet_1')
-            success_message
+        msg = 'Экспорт данных в xlsx'
+        try:
+            with self.session_scope() as session:
+                query = (
+                        session.query(WeatherData)
+                        .order_by(WeatherData.id.desc())
+                        .limit(rows)
+                )
+                df = pd.read_sql_query(
+                        query.statement, con=self.engine
+                )
+                with pd.ExcelWriter(xlsx_path, mode='w') as writer:
+                    df.to_excel(writer, index=False, sheet_name='Sheet_1')
+                print(success_message(msg))
+        except Exception as e:
+            print(error_message(msg, e))

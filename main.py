@@ -1,16 +1,20 @@
-from Settings.config import cities, wind_rose, sqlite_database, delay
+from Settings.config import cities, wind_rose, sqlite_database
 from Database.db_manager import DataBaseManager
 from Tools.extractor import DataService
 from Tools.upd_weather import update_weather
 from Interface.interface import UserInterface as UI
+from Interface.messages import city_message
+
 import asyncio
+import sys
+import traceback
 
 
 async def main():
     city = "Москва"
     latitude, longitude = cities[city]
 
-    print(f'Записываются данные о погоде в г.{city} каждые {delay} минут(ы).')
+    print(city_message(city))
 
     MNG = DataBaseManager(sqlite_database)
     DS = DataService(latitude, longitude)
@@ -27,8 +31,10 @@ async def main():
     await ui.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nВнимание! Выполнение прервано пользователем.")
+        print("\nВыполнение прервано пользователем.")
+    except Exception as e:
+        print(f"\nОшибка: {e}")
