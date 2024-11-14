@@ -1,3 +1,5 @@
+import asyncio
+from Database.base import Weather
 
 
 async def update_weather(extractor, transformer, loader):
