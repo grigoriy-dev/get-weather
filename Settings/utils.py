@@ -2,10 +2,11 @@
 Модуль для вспомогательных функций.
 """
 
+import json
 import asyncio
 from math import ceil, floor
 
-from Settings.config import wind_rose
+from Settings.config import wind_rose, cities_path
 
 
 async def round_value(value):
@@ -25,3 +26,11 @@ async def get_wind_direction(wind_grade):
     """
     rose = wind_rose
     return rose[min(rose, key=lambda x: abs(x - wind_grade))]
+
+async def get_city_coordinates(city):
+    """
+    Извлечение координат города по названию {city}.
+    """
+    with open(cities_path, 'r') as f:
+        data = json.load(f)
+    return data[city]

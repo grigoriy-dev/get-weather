@@ -37,7 +37,7 @@ def help_message():
 def show_me_weather(last_weather):
     # Выводит на экран актуальные данные о погоде в текущий момент.
     return f'''
-Погода в Москве на {last_weather.date} в {last_weather.time}:
+Погода в г.{last_weather.city} на {last_weather.date} в {last_weather.time}:
 Температура: {last_weather.temperature}*C
 Направление ветра: {last_weather.wind_dir}
 Скорость ветра: {last_weather.wind_speed} м/с

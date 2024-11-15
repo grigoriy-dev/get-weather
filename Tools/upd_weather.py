@@ -11,12 +11,12 @@ import asyncio
 from Database.base import Weather
 from Database.db_manager import DataBaseManager
 from Tools.extractor import DataService
-from Settings.config import delay, cities, wind_rose, sqlite_database
+from Settings.config import delay, wind_rose, sqlite_database
 
 
 async def update_weather(city: str, latitude: float, longitude: float):
     """
-    Асинхронная функция для регулярного обновления данных о погоде.
+    Функция для регулярного обновления данных о погоде.
     """
     while True:
         # Создаем экземпляры менеджера базы данных и сервиса извлечения данных

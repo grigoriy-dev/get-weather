@@ -8,7 +8,8 @@
 import asyncio
 import sys
 
-from Settings.config import cities, wind_rose, sqlite_database
+from Settings.config import wind_rose, sqlite_database
+from Settings.utils import get_city_coordinates
 from Database.db_manager import DataBaseManager
 from Tools.extractor import DataService
 from Tools.upd_weather import update_weather
@@ -18,8 +19,8 @@ from Interface.messages import city_message
 
 async def main():
     # Конфигурация города
-    city = "Москва"
-    latitude, longitude = cities[city]
+    city = input('Введите название города: ')
+    latitude, longitude = await get_city_coordinates(city)
     print(city_message(city))
 
     # Запуск обновления погоды в отдельном таске
@@ -37,4 +38,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nВыполнение прервано пользователем.")
     except Exception as e:
-        print(f"\nОшибка: {e}")
+        print(f"\nОшибка main: {e}")
