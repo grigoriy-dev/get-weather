@@ -20,7 +20,8 @@ class UserInterface:
         self.database = database
         self.command_dict = {
             '/show': self.show_data,
-            '/export': self.export_data
+            '/export': self.export_data,
+            '/unique_cities': self.get_unique_cities
         }
 
     async def run(self):
@@ -37,7 +38,7 @@ class UserInterface:
                     await self.command_dict[cmd]()
                     continue
                 else:
-                    print(help_message)
+                    print(help_message())
             except EOFError:
                 break
 
@@ -49,3 +50,8 @@ class UserInterface:
         # Получает последние данные о погоде и выводит их на экран.
         last_weather = await self.database.get_last_weather()
         print(show_me_weather(last_weather))
+
+    async def get_unique_cities(self):
+        # Получение списока уникальных городов из базы данных
+        unique_cities = await self.database.get_unique_cities()
+        print(unique_cities)

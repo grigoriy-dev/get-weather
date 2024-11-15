@@ -19,8 +19,7 @@ from Interface.messages import city_message
 
 async def main():
     # Конфигурация города
-    city = input('Введите название города: ')
-    latitude, longitude = await get_city_coordinates(city)
+    city, latitude, longitude = await get_city_coordinates()
     print(city_message(city))
 
     # Запуск обновления погоды в отдельном таске

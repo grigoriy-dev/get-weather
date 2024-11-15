@@ -11,8 +11,9 @@ CITY_TEMPLATE = 'Записываются данные о погоде в г.{} 
 SUCCESS_TEMPLATE = '{}: успешно.'
 ERROR_TEMPLATE = 'Внимание! {}:'
 HELP_TEMPLATE = '''
-\n/show - Вывести данные на экран
-\n/export - Экспортировать данные в .xlsx
+/show - Вывести данные на экран
+/export - Экспортировать данные в .xlsx
+/unique_cities - Список городов с данными
 '''
 
 def city_message(city):

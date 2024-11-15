@@ -106,3 +106,9 @@ class DataBaseManager:
                 print(success_message(msg))
         except Exception as e:
             print(error_message(msg, e))
+
+    async def get_unique_cities(self) -> list[str]:
+        # Получение списока уникальных городов из базы данных
+        with self.session_scope() as session:
+            unique_cities = session.query(WeatherData.city).distinct().all()
+        return [city[0] for city in unique_cities]
