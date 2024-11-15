@@ -20,7 +20,7 @@ class UserInterface:
         self.database = database
         self.command_dict = {
             '/show': self.show_data,
-            '/export': self.export_data,
+            '/export': self.export_data
         }
 
     async def run(self):
