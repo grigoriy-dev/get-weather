@@ -1,13 +1,19 @@
-# Импорт зависимостей
-from .base import WeatherData, Weather, Base
-from Interface.messages import success_message, error_message
-from Settings.config import xlsx_path, db_path, rows, sqlite_database
-# Импорт библиотек
+"""
+Модуль для управления базой данных.
+
+Этот модуль содержит класс DataBaseManager, который реализует функциональность для работы с базой данных,
+включая сохранение, получение и экспорт данных.
+"""
+
 import pandas as pd
 from typing import Generator
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from contextlib import contextmanager
+
+from .base import WeatherData, Weather, Base
+from Interface.messages import success_message, error_message
+from Settings.config import xlsx_path, db_path, rows, sqlite_database
 
 
 class DataBaseManager:
@@ -16,12 +22,21 @@ class DataBaseManager:
     Используется @contextmanager для безопасных сессий.
     '''
     def __init__(self, sqlite_database):
+        """
+        Конструктор класса.
+        Создает движок SQLAlchemy и инициализирует таблицы в базе данных.
+        :param sqlite_database: Путь к базе данных SQLite.
+        """
         self.engine = create_engine(sqlite_database, echo=False)
         Base.metadata.create_all(self.engine)
 
     @contextmanager
     def session_scope(self) -> Generator[Session, None, None]:
-        # Контекстный менеджер для управления сессиями
+        """
+        Контекстный менеджер для управления сессией базы данных.
+        Открывает новую сессию, фиксирует изменения и закрывает сессию.
+        При возникновении ошибок откатывает транзакции.
+        """
         session = Session(self.engine)
         try:
             yield session
@@ -33,7 +48,7 @@ class DataBaseManager:
             session.close()
 
     async def save_weather(self, weather: Weather):
-        # Запись полученных данных о погоде в БД
+        # Сохраняет данные о погоде в базу данных.
         msg = 'Сохранение данных в БД'
         try:
             with self.session_scope() as session:
@@ -54,7 +69,7 @@ class DataBaseManager:
             print(error_message(msg, e))
 
     async def get_last_weather(self):
-        # Извлечение последней записи из БД
+        # Возвращает последнюю запись о погоде из базы данных.
         with self.session_scope() as session:
             weather_data = session.query(WeatherData).order_by(WeatherData.id.desc()).first()
             
@@ -74,7 +89,7 @@ class DataBaseManager:
                 raise ValueError("No weather data available.")
 
     async def export_to_xlsx(self):
-        # Экспорт  из БД в файл xlsx
+        # Экспортирует данные из базы данных в файл формата XLSX.
         msg = 'Экспорт данных в xlsx'
         try:
             with self.session_scope() as session:

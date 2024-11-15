@@ -1,9 +1,17 @@
+"""
+Модуль для обработки данных о погоде.
+
+Этот модуль предоставляет классы и методы для взаимодействия с API погоды,
+преобразования полученных данных и формирования объектов для хранения информации о погоде.
+"""
+
 import asyncio
 import aiohttp
 from typing import Dict, Any
+
 from Database.base import Weather
 from Settings.config import precipitation_map
-from .utils import round_value, get_wind_direction
+from Settings.utils import round_value, get_wind_direction
 
 
 class DataService:
@@ -12,6 +20,7 @@ class DataService:
     Осуществляет запрос к API, преобразование полученных данных и формирование объекта Weather.
     """
     def __init__(self, latitude: float, longitude: float):
+        # Конструктор класса
         self.url = "https://api.open-meteo.com/v1/forecast"
         self.params = {
             "latitude": latitude,

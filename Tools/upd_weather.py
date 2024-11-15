@@ -1,22 +1,33 @@
+"""
+Модуль для обновления данных о погоде.
+
+Этот модуль отвечает за регулярное обновление данных о погоде
+в заданный промежут времени {delay} для заданного города {city}.
+Данные извлекаются через API, преобразуются и сохраняются в базу данных.
+"""
+
 import asyncio
+
 from Database.base import Weather
 from Database.db_manager import DataBaseManager
 from Tools.extractor import DataService
 from Settings.config import delay, cities, wind_rose, sqlite_database
 
 
-async def update_weather(city, latitude, longitude):
+async def update_weather(city: str, latitude: float, longitude: float):
+    """
+    Асинхронная функция для регулярного обновления данных о погоде.
+    """
     while True:
-        # Ждем delay минут перед следующим обновлением
-        await asyncio.sleep(delay * 60)
-        try:
-            MNG = DataBaseManager(sqlite_database)
-            DS = DataService(latitude, longitude)
+        # Создаем экземпляры менеджера базы данных и сервиса извлечения данных
+        mng = DataBaseManager(sqlite_database)
+        ds = DataService(latitude, longitude)
 
-            raw_data = await DS.fetch_data()
-            transform_data = await DS.transform_data(raw_data, city)
-            load_data = await MNG.save_weather(weather=transform_data)
-            print('Данные успешно сохранены в БД')
-        except Exception as e:
-            print(f"Произошла ошибка при обновлении погоды: {e}")
+        # Извлекаем, Преобразуем, Сохраняем данные
+        raw_data = await ds.fetch_data()
+        transformed_data = await ds.transform_data(raw_data, city)
+        await mng.save_weather(transformed_data)
+
+        # Ожидаем delay минут перед следующим обновлением
+        await asyncio.sleep(delay * 60)
         
