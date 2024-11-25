@@ -6,7 +6,7 @@
 
 - **ORM**: SQLAlchemy
 - **База данных**: SQLite
-- **Другие библиотеки**: asyncio, aiohttp
+- **Другие библиотеки**: asyncio, aiohttp, pandas
 
 ## Зависимости проекта
 
