@@ -37,6 +37,8 @@ class UserInterface:
                 if cmd in self.command_dict:
                     await self.command_dict[cmd]()
                     continue
+                elif cmd == '/exit':
+                    break
                 else:
                     print(help_message())
             except EOFError:

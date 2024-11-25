@@ -14,7 +14,7 @@ from Database.db_manager import DataBaseManager
 from Tools.extractor import DataService
 from Tools.upd_weather import update_weather
 from Interface.interface import UserInterface as UI
-from Interface.messages import city_message
+from Interface.messages import city_message, exit_message
 
 
 async def main():
@@ -23,18 +23,28 @@ async def main():
     print(city_message(city))
 
     # Запуск обновления погоды в отдельном таске
-    asyncio.create_task(update_weather(city, latitude, longitude))
+    update_task = asyncio.create_task(update_weather(city, latitude, longitude))
 
     # Запуск интерфейса пользователя
     MNG = DataBaseManager(sqlite_database)
     ui = UI(MNG)
-    await ui.run()
+
+    # Конструкция обеспечивает корректный выход из программы
+    try:
+        await ui.run()
+    finally:
+        update_task.cancel()
+        try:
+            await update_task
+        except asyncio.CancelledError:
+            # Игнорируем CancelledError, так как это ожидаемое поведение
+            pass
 
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nВыполнение прервано пользователем.")
+        print(exit_message())
     except Exception as e:
         print(f"\nОшибка main: {e}")
