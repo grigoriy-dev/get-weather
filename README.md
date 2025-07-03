@@ -49,7 +49,7 @@
 1. Клонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/forgitaccaunt/get-weather.git .
+   git clone https://github.com/grigoriy-dev/get-weather.git .
    ```
 
 2. Установите зависимости:
